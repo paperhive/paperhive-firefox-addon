@@ -1,0 +1,9 @@
+{
+  "name": "paperhive-firefox-addon",
+  "title": "PaperHive",
+  "id": "jid1-k87HMfd4QZB09Q",
+  "description": "Connecting to PaperHive backend",
+  "author": "Nico Schlömer <nico@paperhive.org>",
+  "license": "MPL 2.0",
+  "version": "0.0.1"
+}
