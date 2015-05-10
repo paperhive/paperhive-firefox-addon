@@ -35,20 +35,11 @@
   var frontentUrl = 'https://paperhive.org/';
   var whitelistedHostnames = ['arxiv.org'];
 
-
-  tabs.on('open', function(tab) {
-    console.log('tab open');
-  });
-
   tabs.on('ready', function(tab) {
-    console.log('tab ready');
-  });
+    // reset button
+    button.disabled = true;
+    buttonHref = undefined;
 
-  tabs.on('activate', function(tab) {
-    console.log('tab activate');
-  });
-
-  tab.on('ready', function(tab) {
     // We could actually check on every single page, but we don't want to put
     // the PaperHive backend under too much load. Hence, filter by hostname.
     var arr = tab.url.split('/');
@@ -93,9 +84,6 @@
               }
             });
             discussionsRequest.get();
-          } else {
-            button.disabled = true;
-            buttonHref = undefined;
           }
         } else {
           console.error('Illegal response status.');
