@@ -9,6 +9,9 @@
   var Request = require('sdk/request').Request;
   var tabs = require('sdk/tabs');
   var { ActionButton } = require('sdk/ui/button/action');
+  var config = require('./config.json');
+
+  console.log(config);
 
   var buttonHref;
   var handleClick = function() {
@@ -31,41 +34,36 @@
     disabled: true
   });
 
-  var apiUrl = 'https://paperhive.org/dev/backend/branches/master';
-  var frontentUrl = 'https://paperhive.org/';
-  var whitelistedHostnames = ['arxiv.org'];
-
   tabs.on('ready', function(tab) {
     // reset button
     button.disabled = true;
     button.badge = undefined;
+    button.label = 'Page not supported';
     buttonHref = undefined;
 
     // We could actually check on every single page, but we don't want to put
     // the PaperHive backend under too much load. Hence, filter by hostname.
     var arr = tab.url.split('/');
-    if (whitelistedHostnames.indexOf(arr[2]) < 0) {
+    if (config.whitelistedHostnames.indexOf(arr[2]) < 0) {
       return;
     }
 
     // talk to paperhive
     var articleRequest = new Request({
-      url: apiUrl + '/articles/sources?handle=' + tab.url,
+      url: config.apiUrl + '/articles/sources?handle=' + tab.url,
       overrideMimeType: 'application/json',
       onComplete: function(response) {
         if (response.status === 200) {
           button.disabled = false;
           var article = response.json;
-          //// send article to panel.js
-          //panel.port.emit('article', article);
 
           if (article._id) {
             // set button link
             button.disabled = false;
-            buttonHref = frontentUrl + '/articles/' + article._id;
+            buttonHref = config.frontentUrl + '/articles/' + article._id;
             // fetch discussions
             var discussionsRequest = new Request({
-              url: apiUrl + '/articles/' + article._id + '/discussions/',
+              url: config.apiUrl + '/articles/' + article._id + '/discussions/',
               overrideMimeType: 'application/json',
               onComplete: function(response) {
                 if (response.status === 200) {
