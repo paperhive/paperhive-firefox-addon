@@ -38,6 +38,7 @@
   tabs.on('ready', function(tab) {
     // reset button
     button.disabled = true;
+    button.badge = undefined;
     buttonHref = undefined;
 
     // We could actually check on every single page, but we don't want to put
