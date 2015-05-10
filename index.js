@@ -48,63 +48,61 @@
     console.log('tab activate');
   });
 
-  tabs.on('open', function(tab) {
-    tab.on('ready', function(tab) {
-      // We could actually check on every single page, but we don't want to put
-      // the PaperHive backend under too much load. Hence, filter by hostname.
-      var arr = tab.url.split('/');
-      if (whitelistedHostnames.indexOf(arr[2]) < 0) {
-        return;
-      }
+  tab.on('ready', function(tab) {
+    // We could actually check on every single page, but we don't want to put
+    // the PaperHive backend under too much load. Hence, filter by hostname.
+    var arr = tab.url.split('/');
+    if (whitelistedHostnames.indexOf(arr[2]) < 0) {
+      return;
+    }
 
-      // talk to paperhive
-      var articleRequest = new Request({
-        url: apiUrl + '/articles/sources?handle=' + tab.url,
-        overrideMimeType: 'application/json',
-        onComplete: function(response) {
-          if (response.status === 200) {
+    // talk to paperhive
+    var articleRequest = new Request({
+      url: apiUrl + '/articles/sources?handle=' + tab.url,
+      overrideMimeType: 'application/json',
+      onComplete: function(response) {
+        if (response.status === 200) {
+          button.disabled = false;
+          var article = response.json;
+          //// send article to panel.js
+          //panel.port.emit('article', article);
+
+          if (article._id) {
+            // set button link
             button.disabled = false;
-            var article = response.json;
-            //// send article to panel.js
-            //panel.port.emit('article', article);
-
-            if (article._id) {
-              // set button link
-              button.disabled = false;
-              buttonHref = frontentUrl + '/articles/' + article._id;
-              // fetch discussions
-              var discussionsRequest = new Request({
-                url: apiUrl + '/articles/' + article._id + '/discussions/',
-                overrideMimeType: 'application/json',
-                onComplete: function(response) {
-                  if (response.status === 200) {
-                    var discussions = response.json;
-                    // set badge
-                    if (discussions.length > 0) {
-                      button.badge = discussions.length;
-                    }
-                    // set label text
-                    if (discussions.length === 1) {
-                      button.label = 'There is 1 discussion on PaperHive.';
-                    } else if (discussions.length > 1) {
-                      button.label = 'There are ' + discussions.length +
-                        ' discussions on PaperHive.';
-                    }
+            buttonHref = frontentUrl + '/articles/' + article._id;
+            // fetch discussions
+            var discussionsRequest = new Request({
+              url: apiUrl + '/articles/' + article._id + '/discussions/',
+              overrideMimeType: 'application/json',
+              onComplete: function(response) {
+                if (response.status === 200) {
+                  var discussions = response.json;
+                  // set badge
+                  if (discussions.length > 0) {
+                    button.badge = discussions.length;
+                  }
+                  // set label text
+                  if (discussions.length === 1) {
+                    button.label = 'There is 1 discussion on PaperHive.';
+                  } else if (discussions.length > 1) {
+                    button.label = 'There are ' + discussions.length +
+                      ' discussions on PaperHive.';
                   }
                 }
-              });
-              discussionsRequest.get();
-            } else {
-              button.disabled = true;
-              buttonHref = undefined;
-            }
+              }
+            });
+            discussionsRequest.get();
           } else {
-            console.error('Illegal response status.');
+            button.disabled = true;
+            buttonHref = undefined;
           }
+        } else {
+          console.error('Illegal response status.');
         }
-      });
-      articleRequest.get();
+      }
     });
+    articleRequest.get();
   });
 
 })();
