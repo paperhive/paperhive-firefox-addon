@@ -8,42 +8,45 @@
 (function() {
   var Request = require('sdk/request').Request;
   var tabs = require('sdk/tabs');
-  var { ToggleButton } = require('sdk/ui/button/toggle');
-  var panels = require('sdk/panel');
-  var self = require('sdk/self');
+  var { ActionButton } = require('sdk/ui/button/action');
 
-  function handleChange(state) {
-    if (state.checked) {
-      panel.show({
-        position: button
-      });
+  var buttonHref;
+  var handleClick = function() {
+    if (buttonHref) {
+      tabs.open(buttonHref);
+    } else {
+      console.error('Empty target URL.');
     }
-  }
+  };
 
-  var button = new ToggleButton({
+  var button = new ActionButton({
     id: 'paperhive-link',
-    label: 'Visit PaperHive',
+    label: 'Open in PaperHive',
     icon: {
       '16': './icon-16.png',
       '32': './icon-32.png',
       '64': './icon-64.png'
     },
-    onChange: handleChange,
+    onClick: handleClick,
     disabled: true
   });
 
-  function handleHide() {
-    button.state('window', {checked: false});
-  }
+  var apiUrl = 'https://paperhive.org/dev/backend/branches/master';
+  var frontentUrl = 'https://paperhive.org/';
+  var whitelistedHostnames = ['arxiv.org'];
 
-  var panel = panels.Panel({
-    contentURL: self.data.url('panel.html'),
-    onHide: handleHide,
-    contentScriptFile: self.data.url('panel.js')
+
+  tabs.on('open', function(tab) {
+    console.log('tab open');
   });
 
-  var apiUrl = 'https://paperhive.org/dev/backend/branches/master';
-  var whitelistedHostnames = ['arxiv.org'];
+  tabs.on('ready', function(tab) {
+    console.log('tab ready');
+  });
+
+  tabs.on('activate', function(tab) {
+    console.log('tab activate');
+  });
 
   tabs.on('open', function(tab) {
     tab.on('ready', function(tab) {
@@ -55,41 +58,52 @@
       }
 
       // talk to paperhive
-      var paperhiveRequest = new Request({
+      var articleRequest = new Request({
         url: apiUrl + '/articles/sources?handle=' + tab.url,
         overrideMimeType: 'application/json',
         onComplete: function(response) {
           if (response.status === 200) {
             button.disabled = false;
             var article = response.json;
-            // send article to panel.js
-            panel.port.emit('article', article);
+            //// send article to panel.js
+            //panel.port.emit('article', article);
 
-            //if (article._id) {
-            //  // fetch discussions
-            //  var xhr = new XMLHttpRequest();
-            //  xhr.open(
-            //    'GET',
-            //    config.apiUrl + '/articles/' + article._id + '/discussions/',
-            //    true
-            //  );
-            //  xhr.responseType = 'json';
-            //  xhr.onload = function() {
-            //    if (this.status === 200) {
-            //      tabToDiscussions[details.tabId] = xhr.response;
-            //      callback(null, article, xhr.response);
-            //    } else {
-            //      callback('Unexpected return value');
-            //    }
-            //  };
-            //  xhr.send(null);
-            //}
+            if (article._id) {
+              // set button link
+              button.disabled = false;
+              buttonHref = frontentUrl + '/articles/' + article._id;
+              // fetch discussions
+              var discussionsRequest = new Request({
+                url: apiUrl + '/articles/' + article._id + '/discussions/',
+                overrideMimeType: 'application/json',
+                onComplete: function(response) {
+                  if (response.status === 200) {
+                    var discussions = response.json;
+                    // set badge
+                    if (discussions.length > 0) {
+                      button.badge = discussions.length;
+                    }
+                    // set label text
+                    if (discussions.length === 1) {
+                      button.label = 'There is 1 discussion on PaperHive.';
+                    } else if (discussions.length > 1) {
+                      button.label = 'There are ' + discussions.length +
+                        ' discussions on PaperHive.';
+                    }
+                  }
+                }
+              });
+              discussionsRequest.get();
+            } else {
+              button.disabled = true;
+              buttonHref = undefined;
+            }
           } else {
             console.error('Illegal response status.');
           }
         }
       });
-      paperhiveRequest.get();
+      articleRequest.get();
     });
   });
 
