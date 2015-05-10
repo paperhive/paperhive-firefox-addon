@@ -1,6 +1,6 @@
 {
   "title": "PaperHive",
-  "name": "paperhive-firefox-addon",
+  "name": "paperhive",
   "version": "0.0.0",
   "description": "Connecting to PaperHive backend",
   "main": "index.js",
