@@ -1,13 +1,22 @@
 {
   "title": "PaperHive",
   "name": "paperhive-firefox-addon",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "description": "Connecting to PaperHive backend",
   "main": "index.js",
   "author": "Nico Schlömer <nico@paperhive.org>",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:paperhive/paperhive-firefox-addon.git"
+  },
   "engines": {
     "firefox": ">=38.0a1",
     "fennec": ">=38.0a1"
   },
-  "license": "GPL-3"
+  "license": "GPL-3",
+  "devDependencies": {
+    "gulp-jscs": "^1.6.0",
+    "gulp-jscs-stylish": "^1.1.0",
+    "gulp-jshint": "^1.10.0"
+  }
 }

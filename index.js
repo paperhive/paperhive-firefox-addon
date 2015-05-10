@@ -45,8 +45,8 @@
   var apiUrl = 'https://paperhive.org/dev/backend/branches/master';
   var whitelistedHostnames = ['arxiv.org'];
 
-  tabs.on('open', function(tab){
-    tab.on('ready', function(tab){
+  tabs.on('open', function(tab) {
+    tab.on('ready', function(tab) {
       // We could actually check on every single page, but we don't want to put
       // the PaperHive backend under too much load. Hence, filter by hostname.
       var arr = tab.url.split('/');
@@ -58,7 +58,7 @@
       var paperhiveRequest = new Request({
         url: apiUrl + '/articles/sources?handle=' + tab.url,
         overrideMimeType: 'application/json',
-        onComplete: function (response) {
+        onComplete: function(response) {
           if (response.status === 200) {
             button.disabled = false;
             var article = response.json;
