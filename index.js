@@ -54,49 +54,54 @@
       url: config.apiUrl + '/articles/sources?handle=' + tab.url,
       overrideMimeType: 'application/json',
       onComplete: function(response) {
-        if (response.status === 200) {
-          button.status('tab', {
-            disabled: false
-          });
-          var article = response.json;
-
-          if (article._id) {
-            // set button link
-            button.state('tab', {
-              disabled: false
-            });
-            buttonHref = config.frontentUrl + '/articles/' + article._id;
-            // fetch discussions
-            var discussionsRequest = new Request({
-              url: config.apiUrl + '/articles/' + article._id + '/discussions/',
-              overrideMimeType: 'application/json',
-              onComplete: function(response) {
-                if (response.status === 200) {
-                  var discussions = response.json;
-                  // set badge
-                  if (discussions.length > 0) {
-                    button.state('tab', {
-                      badge: discussions.length
-                    });
-                  }
-                  // set label text
-                  if (discussions.length === 1) {
-                    button.state('tab', {
-                      label: 'There is 1 discussion on PaperHive.'
-                    });
-                  } else if (discussions.length > 1) {
-                    button.state('tab', {
-                      label: 'There are ' + discussions.length +
-                        ' discussions on PaperHive.'
-                    });
-                  }
-                }
-              }
-            });
-            discussionsRequest.get();
-          }
-        } else {
+        if (response.status !== 200) {
           console.error('Illegal response status.');
+          return;
+        }
+        var article = response.json;
+
+        if (article._id) {
+          // set button link
+          buttonHref = config.frontentUrl + '/articles/' + article._id;
+          // fetch discussions
+          var discussionsRequest = new Request({
+            url: config.apiUrl + '/articles/' + article._id + '/discussions/',
+            overrideMimeType: 'application/json',
+            onComplete: function(response) {
+              if (response.status !== 200) {
+                button.state('tab', {
+                  disabled: false,
+                  label: 'Open on PaperHive.'
+                });
+                return;
+              }
+              var discussions = response.json;
+              var badge;
+              if (discussions.length > 0) {
+                badge = discussions.length;
+              }
+              var label;
+              if (discussions.length === 1) {
+                label = 'There is 1 discussion on PaperHive.';
+              } else if (discussions.length > 1) {
+                label = 'There are ' + discussions.length +
+                  ' discussions on PaperHive.';
+              }
+              // set button
+              button.state('tab', {
+                disabled: false,
+                badge: badge,
+                label: label
+              });
+            }
+          });
+          discussionsRequest.get();
+        } else {
+          // The article is there, but not yet added on PaperHive.
+          button.state('tab', {
+            disabled: false,
+            label: 'Open on PaperHive.'
+          });
         }
       }
     });
