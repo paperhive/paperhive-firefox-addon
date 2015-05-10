@@ -35,10 +35,12 @@
   });
 
   tabs.on('ready', function(tab) {
-    // reset button
-    button.disabled = true;
-    button.badge = undefined;
-    button.label = 'Page not supported';
+    // reset tab button
+    button.state('tab', {
+      disabled: true,
+      badge:  undefined,
+      label: 'Page not supported'
+    });
     buttonHref = undefined;
 
     // We could actually check on every single page, but we don't want to put
@@ -59,7 +61,9 @@
 
           if (article._id) {
             // set button link
-            button.disabled = false;
+            button.state('tab', {
+              disabled: false
+            });
             buttonHref = config.frontentUrl + '/articles/' + article._id;
             // fetch discussions
             var discussionsRequest = new Request({
@@ -70,14 +74,20 @@
                   var discussions = response.json;
                   // set badge
                   if (discussions.length > 0) {
-                    button.badge = discussions.length;
+                    button.state('tab', {
+                      badge: discussions.length
+                    });
                   }
                   // set label text
                   if (discussions.length === 1) {
-                    button.label = 'There is 1 discussion on PaperHive.';
+                    button.state('tab', {
+                      label: 'There is 1 discussion on PaperHive.'
+                    });
                   } else if (discussions.length > 1) {
-                    button.label = 'There are ' + discussions.length +
-                      ' discussions on PaperHive.';
+                    button.state('tab', {
+                      label: 'There are ' + discussions.length +
+                        ' discussions on PaperHive.'
+                    });
                   }
                 }
               }
