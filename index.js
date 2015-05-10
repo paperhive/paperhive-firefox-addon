@@ -11,10 +11,9 @@
   var { ActionButton } = require('sdk/ui/button/action');
   var config = require('./config.json');
 
-  console.log(config);
-
   var buttonHref;
-  var handleClick = function() {
+  var handleClick = function(state) {
+    console.log(state);
     if (buttonHref) {
       tabs.open(buttonHref);
     } else {
@@ -24,7 +23,7 @@
 
   var button = new ActionButton({
     id: 'paperhive-link',
-    label: 'Open in PaperHive',
+    label: 'Page not supported by PaperHive',
     icon: {
       '16': './icon-16.png',
       '32': './icon-32.png',
@@ -39,7 +38,7 @@
     button.state('tab', {
       disabled: true,
       badge:  undefined,
-      label: 'Page not supported'
+      label: 'Page not supported by PaperHive',
     });
     buttonHref = undefined;
 
@@ -56,7 +55,9 @@
       overrideMimeType: 'application/json',
       onComplete: function(response) {
         if (response.status === 200) {
-          button.disabled = false;
+          button.status('tab', {
+            disabled: false
+          });
           var article = response.json;
 
           if (article._id) {
