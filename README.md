@@ -5,11 +5,16 @@ Status](https://gemnasium.com/paperhive/paperhive-firefox-addon.svg)](https://ge
 
 ## Testing
 
-Install Firefox >= 38, install [jpm](https://www.npmjs.com/package/jpm),
+* Install Firefox >= 38.
+* Install [jpm](https://www.npmjs.com/package/jpm):
 ```
 npm install -g jpm
 ```
-and run the add-on with
+* Edit config data:
+```
+cp config.json.default config.json
+```
+* Run the add-on:
 ```
 jpm run -b /usr/bin/firefox
 ```
