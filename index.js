@@ -11,22 +11,24 @@
   var { ActionButton } = require('sdk/ui/button/action');
   var config = require('./config.json');
 
-  var buttonHref;
-  var addArticleUrl;
+  var buttonHref = {};
+  var addArticleUrl = {};
   var handleClick = function() {
-    if (buttonHref) {
-      tabs.open(buttonHref);
-    } else if (addArticleUrl) {
+    if (buttonHref[tabs.activeTab.id]) {
+      tabs.open(buttonHref[tabs.activeTab.id]);
+    } else if (addArticleUrl[tabs.activeTab.id]) {
       var addArticleRequest = new Request({
-        url: config.apiUrl + '/articles/sources?handle=' + addArticleUrl,
+        url: config.apiUrl + '/articles/sources?handle=' +
+          addArticleUrl[tabs.activeTab.id],
         overrideMimeType: 'application/json',
         onComplete: function(response) {
           if (response.status === 200) {
             var article = response.json;
             // reset
-            buttonHref = config.frontendUrl + '/articles/' + article._id;
-            addArticleUrl = undefined;
-            tabs.open(buttonHref);
+            buttonHref[tabs.activeTab.id] =
+              config.frontendUrl + '/articles/' + article._id;
+            addArticleUrl[tabs.activeTab.id] = undefined;
+            tabs.open(buttonHref[tabs.activeTab.id]);
           } else {
             console.error('Could not add article to PaperHive (' +
                           response.status + ')');
@@ -66,8 +68,8 @@
       badge: undefined,
       label: 'Page not supported by PaperHive',
     });
-    buttonHref = undefined;
-    addArticleUrl = undefined;
+    buttonHref[tab.id] = undefined;
+    addArticleUrl[tab.id] = undefined;
 
     // We could actually check on every single page, but we don't want to put
     // the PaperHive backend under too much load. Hence, filter by hostname.
@@ -89,8 +91,8 @@
 
         if (article._id) {
           // set button link
-          buttonHref = config.frontendUrl + '/articles/' + article._id;
-          addArticleUrl = undefined;
+          buttonHref[tab.id] = config.frontendUrl + '/articles/' + article._id;
+          addArticleUrl[tab.id] = undefined;
           // fetch discussions
           var discussionsRequest = new Request({
             url: config.apiUrl + '/articles/' + article._id + '/discussions/',
@@ -128,7 +130,8 @@
           discussionsRequest.get();
         } else {
           // The article is there, but not yet added on PaperHive.
-          addArticleUrl = tab.url;
+          buttonHref[tab.id] = undefined;
+          addArticleUrl[tab.id] = tab.url;
           button.state('tab', {
             disabled: false,
             icon: iconsColor,
