@@ -11,24 +11,28 @@
   var { ActionButton } = require('sdk/ui/button/action');
   var config = require('./config.json');
 
-  var buttonHref = {};
-  var addArticleUrl = {};
+  var buttonData = {};
   var handleClick = function() {
-    if (buttonHref[tabs.activeTab.id]) {
-      tabs.open(buttonHref[tabs.activeTab.id]);
-    } else if (addArticleUrl[tabs.activeTab.id]) {
+    if (!buttonData[tabs.activeTab.id].url) {
+      console.error('Invalid URL');
+      return;
+    }
+    if (buttonData[tabs.activeTab.id].isAdded) {
+      tabs.open(buttonData[tabs.activeTab.id].url);
+    } else {
       var addArticleRequest = new Request({
         url: config.apiUrl + '/articles/sources?handle=' +
-          addArticleUrl[tabs.activeTab.id],
+          buttonData[tabs.activeTab.id].url,
         overrideMimeType: 'application/json',
         onComplete: function(response) {
           if (response.status === 200) {
             var article = response.json;
             // reset
-            buttonHref[tabs.activeTab.id] =
-              config.frontendUrl + '/articles/' + article._id;
-            addArticleUrl[tabs.activeTab.id] = undefined;
-            tabs.open(buttonHref[tabs.activeTab.id]);
+            buttonData[tabs.activeTab.id] = {
+              url: config.frontendUrl + '/articles/' + article._id,
+              isAdded: true
+            };
+            tabs.open(buttonData[tabs.activeTab.id].url);
           } else {
             console.error('Could not add article to PaperHive (' +
                           response.status + ')');
@@ -36,8 +40,6 @@
         }
       });
       addArticleRequest.post();
-    } else {
-      console.error('Empty target URL and article URL.');
     }
   };
 
@@ -68,8 +70,7 @@
       badge: undefined,
       label: 'Page not supported by PaperHive',
     });
-    buttonHref[tab.id] = undefined;
-    addArticleUrl[tab.id] = undefined;
+    buttonData[tab.id] = {};
 
     // We could actually check on every single page, but we don't want to put
     // the PaperHive backend under too much load. Hence, filter by hostname.
@@ -91,8 +92,10 @@
 
         if (article._id) {
           // set button link
-          buttonHref[tab.id] = config.frontendUrl + '/articles/' + article._id;
-          addArticleUrl[tab.id] = undefined;
+          buttonData[tab.id] = {
+            url: config.frontendUrl + '/articles/' + article._id,
+            isAdded: true
+          };
           // fetch discussions
           var discussionsRequest = new Request({
             url: config.apiUrl + '/articles/' + article._id + '/discussions/',
@@ -129,9 +132,11 @@
           });
           discussionsRequest.get();
         } else {
-          // The article is there, but not yet added on PaperHive.
-          buttonHref[tab.id] = undefined;
-          addArticleUrl[tab.id] = tab.url;
+          // The article is whitelisted, but not yet added on PaperHive.
+          buttonData[tab.id] = {
+            url: tab.url,
+            isAdded: false
+          };
           button.state('tab', {
             disabled: false,
             icon: iconsColor,
