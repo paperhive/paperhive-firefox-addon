@@ -13,7 +13,7 @@
 
   var buttonHref;
   var addArticleUrl;
-  var openHref = function() {
+  var handleClick = function() {
     if (buttonHref) {
       tabs.open(buttonHref);
     } else if (addArticleUrl) {
@@ -36,23 +36,31 @@
     }
   };
 
+  var iconsColor = {
+    '16': './icon-16.png',
+    '32': './icon-32.png',
+    '64': './icon-64.png'
+  };
+  var iconsGray = {
+    '16': './icon-gray-16.png',
+    '32': './icon-gray-32.png',
+    '64': './icon-gray-64.png'
+  };
+
   var button = new ActionButton({
     id: 'paperhive-link',
     label: 'Page not supported by PaperHive',
-    icon: {
-      '16': './icon-16.png',
-      '32': './icon-32.png',
-      '64': './icon-64.png'
-    },
-    onClick: openHref,
-    disabled: true
+    disabled: true,
+    icon: iconsGray,
+    onClick: handleClick
   });
 
   tabs.on('ready', function(tab) {
     // reset tab button
     button.state('tab', {
       disabled: true,
-      badge:  undefined,
+      icon: iconsGray,
+      badge: undefined,
       label: 'Page not supported by PaperHive',
     });
     buttonHref = undefined;
@@ -88,6 +96,7 @@
               if (response.status !== 200) {
                 button.state('tab', {
                   disabled: false,
+                  icon: iconsColor,
                   label: 'Open on PaperHive'
                 });
                 return;
@@ -107,6 +116,7 @@
               // set button
               button.state('tab', {
                 disabled: false,
+                icon: iconsColor,
                 badge: badge,
                 label: label
               });
@@ -118,6 +128,7 @@
           addArticleUrl = tab.url;
           button.state('tab', {
             disabled: false,
+            icon: iconsColor,
             label: 'Open on PaperHive'
           });
         }
