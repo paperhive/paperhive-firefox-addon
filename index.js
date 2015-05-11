@@ -20,7 +20,6 @@
     if (buttonData[tabs.activeTab.id].isAdded) {
       tabs.open(buttonData[tabs.activeTab.id].url);
     } else {
-      // TODO disable for a short time here so we don't submit twice
       button.state('tab', {
         disabled: true,
         icon: iconsColor,
