@@ -1,5 +1,6 @@
 # Firefox Add-on for PaperHive
 
+[![Build Status](https://travis-ci.org/paperhive/paperhive-firefox-addon.svg?branch=master)](https://travis-ci.org/paperhive/paperhive-firefox-addon)
 [![Dependency
 Status](https://gemnasium.com/paperhive/paperhive-firefox-addon.svg)](https://gemnasium.com/paperhive/paperhive-firefox-addon)
 
