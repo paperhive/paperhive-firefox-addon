@@ -1,0 +1,7 @@
+## exclude all npm packages by default
+node_modules/
+.*
+*.xpi
+config.json.default
+gulpfile.js
+test/
