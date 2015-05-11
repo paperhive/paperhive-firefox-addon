@@ -20,11 +20,24 @@
     if (buttonData[tabs.activeTab.id].isAdded) {
       tabs.open(buttonData[tabs.activeTab.id].url);
     } else {
+      // TODO disable for a short time here so we don't submit twice
+      button.state('tab', {
+        disabled: true,
+        icon: iconsColor,
+        badge: undefined,
+        label: 'Adding article on PaperHive...'
+      });
       var addArticleRequest = new Request({
         url: config.apiUrl + '/articles/sources?handle=' +
           buttonData[tabs.activeTab.id].url,
         overrideMimeType: 'application/json',
         onComplete: function(response) {
+          button.state('tab', {
+            disabled: false,
+            icon: iconsColor,
+            badge: undefined,
+            label: 'Open on PaperHive'
+          });
           if (response.status === 200) {
             var article = response.json;
             // reset
