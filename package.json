@@ -10,8 +10,7 @@
     "url": "git@github.com:paperhive/paperhive-firefox-addon.git"
   },
   "engines": {
-    "firefox": ">=38.0a1",
-    "fennec": ">=38.0a1"
+    "firefox": ">=38.0a1"
   },
   "license": "GPL-3",
   "devDependencies": {
