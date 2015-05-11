@@ -11,9 +11,6 @@ var paths = {
   html: 'data/**.html'
 };
 
-// Don't depend on jscs for now, cf.
-// <https://github.com/jscs-dev/node-jscs/issues/1355>
-// TODO fix this
 gulp.task('jshint', function() {
   return gulp.src(paths.js)
   .pipe(jshint())
