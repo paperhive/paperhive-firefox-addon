@@ -80,7 +80,7 @@
 
         if (article._id) {
           // set button link
-          buttonHref = config.frontentUrl + '/articles/' + article._id;
+          buttonHref = config.frontendUrl + '/articles/' + article._id;
           addArticleUrl = undefined;
           // fetch discussions
           var discussionsRequest = new Request({
@@ -90,7 +90,7 @@
               if (response.status !== 200) {
                 button.state('tab', {
                   disabled: false,
-                  label: 'Open on PaperHive.'
+                  label: 'Open on PaperHive'
                 });
                 return;
               }
@@ -99,12 +99,12 @@
               if (discussions.length > 0) {
                 badge = discussions.length;
               }
-              var label;
+              var label = 'Open on PaperHive';
               if (discussions.length === 1) {
-                label = 'There is 1 discussion on PaperHive.';
+                label = 'There is 1 discussion on PaperHive';
               } else if (discussions.length > 1) {
                 label = 'There are ' + discussions.length +
-                  ' discussions on PaperHive.';
+                  ' discussions on PaperHive';
               }
               // set button
               button.state('tab', {
@@ -120,7 +120,7 @@
           addArticleUrl = tab.url;
           button.state('tab', {
             disabled: false,
-            label: 'Open on PaperHive.'
+            label: 'Open on PaperHive'
           });
         }
       }
