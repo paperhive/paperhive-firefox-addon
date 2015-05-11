@@ -12,12 +12,29 @@
   var config = require('./config.json');
 
   var buttonHref;
-  var handleClick = function(state) {
-    console.log(state);
+  var addArticleUrl;
+  var openHref = function() {
     if (buttonHref) {
       tabs.open(buttonHref);
+    } else if (addArticleUrl) {
+      var addArticleRequest = new Request({
+        url: config.apiUrl + '/articles/sources?handle=' + addArticleUrl,
+        overrideMimeType: 'application/json',
+        onComplete: function(response) {
+          console.log(response);
+          console.log(response.status);
+          if (response.status === 200) {
+            var article = response.json;
+            tabs.open(config.frontendUrl + '/articles/' + article._id);
+          } else {
+            console.error('Could not add article to PaperHive (' +
+                          response.status + ')');
+          }
+        }
+      });
+      addArticleRequest.post();
     } else {
-      console.error('Empty target URL.');
+      console.error('Empty target URL and article URL.');
     }
   };
 
@@ -29,7 +46,7 @@
       '32': './icon-32.png',
       '64': './icon-64.png'
     },
-    onClick: handleClick,
+    onClick: openHref,
     disabled: true
   });
 
@@ -41,6 +58,7 @@
       label: 'Page not supported by PaperHive',
     });
     buttonHref = undefined;
+    addArticleUrl = undefined;
 
     // We could actually check on every single page, but we don't want to put
     // the PaperHive backend under too much load. Hence, filter by hostname.
@@ -63,6 +81,7 @@
         if (article._id) {
           // set button link
           buttonHref = config.frontentUrl + '/articles/' + article._id;
+          addArticleUrl = undefined;
           // fetch discussions
           var discussionsRequest = new Request({
             url: config.apiUrl + '/articles/' + article._id + '/discussions/',
@@ -98,6 +117,7 @@
           discussionsRequest.get();
         } else {
           // The article is there, but not yet added on PaperHive.
+          addArticleUrl = tab.url;
           button.state('tab', {
             disabled: false,
             label: 'Open on PaperHive.'
