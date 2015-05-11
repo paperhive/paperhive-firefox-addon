@@ -1,3 +1,8 @@
+/**
+ * @license PaperHive Firefox Add-on v0.0.2
+ * (c) 2015 Nico Schlömer <nico@paperhive.org>
+ * License: GPL-3
+ */
 'use strict';
 
 var gulp = require('gulp');
