@@ -21,8 +21,6 @@
         url: config.apiUrl + '/articles/sources?handle=' + addArticleUrl,
         overrideMimeType: 'application/json',
         onComplete: function(response) {
-          console.log(response);
-          console.log(response.status);
           if (response.status === 200) {
             var article = response.json;
             tabs.open(config.frontendUrl + '/articles/' + article._id);
@@ -73,7 +71,7 @@
       overrideMimeType: 'application/json',
       onComplete: function(response) {
         if (response.status !== 200) {
-          console.error('Illegal response status.');
+          console.error('Illegal response status (' + response.status + ').');
           return;
         }
         var article = response.json;
