@@ -23,7 +23,10 @@
         onComplete: function(response) {
           if (response.status === 200) {
             var article = response.json;
-            tabs.open(config.frontendUrl + '/articles/' + article._id);
+            // reset
+            buttonHref = config.frontendUrl + '/articles/' + article._id;
+            addArticleUrl = undefined;
+            tabs.open(buttonHref);
           } else {
             console.error('Could not add article to PaperHive (' +
                           response.status + ')');
