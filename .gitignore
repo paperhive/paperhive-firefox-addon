@@ -2,3 +2,4 @@ node_modules
 bootstrap.js
 install.rdf
 config.json
+*.xpi
