@@ -1,5 +1,5 @@
 /**
-+ * @license PaperHive Firefox Add-on v0.0.0
++ * @license PaperHive Firefox Add-on v0.0.1
 + * (c) 2015 Nico Schlömer <nico@paperhive.org>
 + * License: GPL-3
 + */
