@@ -1,7 +1,7 @@
 {
   "title": "PaperHive",
   "name": "paperhive",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Connecting to PaperHive backend",
   "main": "index.js",
   "author": "Nico Schlömer <nico@paperhive.org>",
