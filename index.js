@@ -61,9 +61,9 @@
     '64': './icon-64.png'
   };
   var iconsGray = {
-    '16': './icon-gray-16.png',
-    '32': './icon-gray-32.png',
-    '64': './icon-gray-64.png'
+    '16': './icon-white-16.png',
+    '32': './icon-white-32.png',
+    '64': './icon-white-64.png'
   };
 
   var button = new ActionButton({
