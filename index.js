@@ -8,7 +8,7 @@
 (function() {
   var Request = require('sdk/request').Request;
   var tabs = require('sdk/tabs');
-  var { ActionButton } = require('sdk/ui/button/action');
+  var {ActionButton} = require('sdk/ui/button/action');
   var config = require('./config.json');
 
   var buttonData = {};
