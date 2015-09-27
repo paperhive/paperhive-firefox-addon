@@ -1,5 +1,5 @@
 /**
-+ * @license PaperHive Firefox Add-on v0.0.1
++ * @license PaperHive Firefox Add-on v0.0.2
 + * (c) 2015 Nico Schlömer <nico@paperhive.org>
 + * License: GPL-3
 + */
@@ -8,7 +8,7 @@
 (function() {
   var Request = require('sdk/request').Request;
   var tabs = require('sdk/tabs');
-  var { ActionButton } = require('sdk/ui/button/action');
+  var {ActionButton} = require('sdk/ui/button/action');
   var config = require('./config.json');
 
   var buttonData = {};
@@ -20,7 +20,6 @@
     if (buttonData[tabs.activeTab.id].isAdded) {
       tabs.open(buttonData[tabs.activeTab.id].url);
     } else {
-      // TODO disable for a short time here so we don't submit twice
       button.state('tab', {
         disabled: true,
         icon: iconsColor,
@@ -62,9 +61,9 @@
     '64': './icon-64.png'
   };
   var iconsGray = {
-    '16': './icon-gray-16.png',
-    '32': './icon-gray-32.png',
-    '64': './icon-gray-64.png'
+    '16': './icon-white-16.png',
+    '32': './icon-white-32.png',
+    '64': './icon-white-64.png'
   };
 
   var button = new ActionButton({
