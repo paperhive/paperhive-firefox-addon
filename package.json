@@ -12,9 +12,9 @@
   "engines": {
     "firefox": ">=38.0a1"
   },
-  "license": "GPL-3",
+  "license": "GPL-3.0",
   "devDependencies": {
-    "gulp": "3.8.11",
+    "gulp": "3.9.0",
     "gulp-jscs": "3.0.0",
     "gulp-jscs-stylish": "1.2.0",
     "gulp-jshint": "1.11.2"
