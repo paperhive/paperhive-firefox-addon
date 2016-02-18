@@ -1,8 +1,10 @@
+# This add-on has been superseded by the [Paperhive Web Extension](https://github.com/paperhive/paperhive-web-extension).
+
+
+
 # Firefox Add-on for PaperHive
 
 [![Build Status](https://travis-ci.org/paperhive/paperhive-firefox-addon.svg?branch=master)](https://travis-ci.org/paperhive/paperhive-firefox-addon)
-[![Dependency
-Status](https://gemnasium.com/paperhive/paperhive-firefox-addon.svg)](https://gemnasium.com/paperhive/paperhive-firefox-addon)
 
 ## Testing
 
